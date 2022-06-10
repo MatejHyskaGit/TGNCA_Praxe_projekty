@@ -15,11 +15,12 @@ $day = "2022-04-15";
 
 $output_array = [];
 
-$dim_array = []; // provide dimensions
-$met_array = []; // provide metrics
+$dim_array = ["ga:productName","ga:campaign"];
+$met_array = ["ga:itemRevenue","ga:itemQuantity","ga:uniquePurchases","ga:itemsPerPurchase"];
 
 $response = getReport($analytics, $view_id, $day, $dim_array, $met_array);
 $output_array = convertData($output_array, $response);
+var_dump($output_array);
 
 function convertData($output_array, $response)
 {
@@ -48,10 +49,13 @@ function convertData($output_array, $response)
 
             //Getting Metrics
             if ($text != "break") {
+                print($text);
+                print("<br>");
                 for ($j = 0; $j < count($metrics); $j++) {
                     $values = $metrics[$j]->getValues();
                     for ($k = 0; $k < count($values); $k++) {
                         $entry = $metricHeaders[$k];
+                        print($entry->getName() . ": " . $values[$k] . "\n");
                         if (count($output_array[$entry->getName()]) == 0) {
                             $output_array[$entry->getName()] = [$values[$k]];
                         } else {
@@ -59,6 +63,9 @@ function convertData($output_array, $response)
                         }
                     }
                 }
+                print("<br>");
+                print("<br>");
+                print("<br>");
                 // $camp_id = get_campaign_id_from_utm_campaign($camp_name, $eshop["id"]);
                 // //if not exist
                 // $date = date("Y-m-d", strtotime($date_time));

@@ -1,5 +1,9 @@
 <?php
-function writeHeader($url)//give url of web page or file
+$url = 'https://feeds.mergado.com/tropicliberec-cz-google-nakupy-cz-3005fb225d53c620d3954c9f8fadee19.xml';
+
+writeHeader($url);
+
+function writeHeader($url)
 {
     $file = fopen($url, "r");
 

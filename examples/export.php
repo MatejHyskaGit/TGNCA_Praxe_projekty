@@ -1,4 +1,37 @@
 <?php
+$homepage = file_get_contents("example_data.json");
+$data = [];
+$input = json_decode($homepage, true);
+$datas = json_decode(json_encode($input["data"]), true);
+$data["labels"] = $datas["labels"];
+$data["expenses"] = $datas["expenses"];
+$data["revenue"] = $datas["revenue"];
+$data["users"] = $datas["users"];
+$data["orders"] = $datas["orders"];
+$data["assisted_revenues"] = $datas["assisted_revenues"];
+$data["currency"] = $input["currency"];
+
+
+
+
+$keys = array_keys($data);
+$pno = [];
+for ($i = 0; $i < count($data[$keys[0]]); $i++) {
+    $expense = $data[$keys[1]][$i];
+    $revenue = $data[$keys[2]][$i];
+    if ($revenue == 0.00) {
+        $revenue = INF;
+    }
+    array_push($pno, round(($expense / $revenue) * 100, 2) . "%");
+}
+$data["pno"] = $pno;
+
+$export = new Export($data);
+$export->generate_xls_report($data);
+echo "<br> <br>";
+$export->generate_csv_report($data);
+
+
 class Export
 {
     function generate_xls_report(array $values)
@@ -23,6 +56,7 @@ class Export
                 }
             }
         }
+        echo $xls_content;
         $this->create_file($filename, $xls_content);
         if (file_exists($filename) && $this->create_file($filename, $xls_content)) {
             return true;
@@ -84,6 +118,7 @@ class Export
                 }
             }
         }
+        echo $csv_content;
         $this->create_csv_file($filename, $csv_content);
         if (file_exists($filename) && $this->create_csv_file($filename, $csv_content)) {
             return true;
